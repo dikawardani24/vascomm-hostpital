@@ -11,11 +11,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,12 +34,14 @@ import dika.vasscom.ui.components.BannerService
 import dika.vasscom.ui.components.LoadingDialog
 import dika.vasscom.ui.components.Tips
 import dika.vasscom.ui.components.TopBar
+import dika.vasscom.ui.screens.home.component.AppDrawer
 import dika.vasscom.ui.screens.home.component.FilterOption
 import dika.vasscom.ui.screens.home.component.ListBanner
 import dika.vasscom.ui.screens.home.component.ListServices
 import dika.vasscom.ui.screens.home.component.ListTools
 import dika.vasscom.ui.screens.home.component.SearchFilter
 import dika.vasscom.ui.theme.VascommHospitalTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplication
 
@@ -48,43 +55,62 @@ fun HomeScreen() {
     }
 
     val isLoading = currentState is HomeState.Loading
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            AppDrawer(
+                drawerState = drawerState,
+                navigateToProfile = {  },
+                navigateToSetting = {},
+                navigateToLogin = { },
+                onCloseTap = { scope.launch { drawerState.close() }}
+            )
+        },
+        gesturesEnabled = false
     ) {
-        Scaffold(
-            topBar = {
-                TopBar(
-                    onRefreshClick = { viewModel.getData() }
-                )
-            }
-        ) { paddingValues ->
-            when (currentState) {
-                is HomeState.Idle, is HomeState.Loading -> {
-                    EmptyHomeContent(paddingValues)
-                }
-                is HomeState.ShowData -> {
-                    val showDataState = currentState as HomeState.ShowData
-                    SuccessHomeContent(
-                        paddingValues = paddingValues,
-                        tips = showDataState.tips,
-                        banners = showDataState.banners,
-                        onTipClick = { tip ->
-                            Log.d("HomeScreen", "Tip clicked: $tip")
-                        }
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Scaffold(
+                topBar = {
+                    TopBar(
+                        onRefreshClick = { viewModel.getData() },
+                        onMenuClick = { scope.launch {
+                            drawerState.open()
+                        }}
                     )
                 }
-                is HomeState.Error -> {
-                    val errorState = currentState as HomeState.Error
-                    ErrorHomeContent(
-                        paddingValues = paddingValues,
-                        errorMessage = errorState.message,
-                        onRetry = { viewModel.getData() }
-                    )
+            ) { paddingValues ->
+                when (currentState) {
+                    is HomeState.Idle, is HomeState.Loading -> {
+                        EmptyHomeContent(paddingValues)
+                    }
+                    is HomeState.ShowData -> {
+                        val showDataState = currentState as HomeState.ShowData
+                        SuccessHomeContent(
+                            paddingValues = paddingValues,
+                            tips = showDataState.tips,
+                            banners = showDataState.banners,
+                            onTipClick = { tip ->
+                                Log.d("HomeScreen", "Tip clicked: $tip")
+                            }
+                        )
+                    }
+                    is HomeState.Error -> {
+                        val errorState = currentState as HomeState.Error
+                        ErrorHomeContent(
+                            paddingValues = paddingValues,
+                            errorMessage = errorState.message,
+                            onRetry = { viewModel.getData() }
+                        )
+                    }
                 }
             }
+            LoadingDialog(isLoading = isLoading)
         }
-        LoadingDialog(isLoading = isLoading)
     }
 }
 

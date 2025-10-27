@@ -28,7 +28,7 @@ fun AppNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Route.Login.name
+        startDestination = Route.Home.name
     ) {
         composable(
             route = Route.Login.name,

@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Vascom Hospital</string>
+    <string name="email">Email</string>
+    <string name="email_placeholder">Masukkan email anda</string>
+    <string name="password">Password</string>
+    <string name="password_placeholder">Masukkan password anda</string>
+    <string name="login">Login</string>
+    <string name="no_account_quest">Belum punya akun ?</string>
+    <string name="register_now">Daftar Sekarang</string>
+    <string name="firstname">Nama Depan</string>
+    <string name="firstname_placeholder">Masukkan nama depan anda</string>
+    <string name="last_name">Nama Belakang</string>
+    <string name="last_name_placeholder">Masukkan nama belakang anda</string>
+    <string name="no_ktn">No. KTP</string>
+    <string name="no_ktn_placeholder">Masukkan No. KTP anda</string>
+    <string name="no_telp">No. Telpon</string>
+    <string name="no_telp_placeholder">Masukkan No. Telpon anda</string>
+    <string name="password_confirm">Konfirmasi Password</string>
+    <string name="password_confirm_placeholder">Konfirmasi password anda</string>
+    <string name="register">Register</string>
+    <string name="has_account_quest">Sudah punya akun ?</string>
+    <string name="login_now">Login Sekarang</string>
+</resources>
